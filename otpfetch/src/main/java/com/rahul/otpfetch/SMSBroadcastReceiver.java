@@ -1,4 +1,4 @@
-package com.rahul.otpretriever;
+package com.rahul.otpfetch;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,9 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Status;
-import com.rahul.otpfetch.SmsRetriever;
 
-public class MySMSBroadcastReceiver extends BroadcastReceiver {
+public class SMSBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -31,7 +30,6 @@ public class MySMSBroadcastReceiver extends BroadcastReceiver {
                         createBroadcastIntent(context, message, true);
                         break;
                     case CommonStatusCodes.TIMEOUT:
-                        // Waiting for SMS timed out (5 minutes)
                         createBroadcastIntent(context, null, false);
                         break;
                 }
@@ -40,10 +38,10 @@ public class MySMSBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void createBroadcastIntent(Context context, @Nullable String data, boolean isSuccess) {
-        Intent intent = new Intent(com.rahul.otpfetch.SmsRetriever.SMS_RETRIEVED_ACTION);
-        // Data you need to pass to activity
-        intent.putExtra(com.rahul.otpfetch.SmsRetriever.MESSAGE, data);
-        intent.putExtra(SmsRetriever.SUCCESS, isSuccess);
+
+        Intent intent = new Intent(SmsFetch.SMS_INTENT_ACTION);
+        intent.putExtra(SmsFetch.TAG_MESSAGE, data);
+        intent.putExtra(SmsFetch.TAG_SUCCESS, isSuccess);
         context.sendBroadcast(intent);
     }
 }

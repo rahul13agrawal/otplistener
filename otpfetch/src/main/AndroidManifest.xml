@@ -3,7 +3,7 @@
 
     <application>
         <receiver
-            android:name="com.rahul.otpfetch.MySMSBroadcastReceiver"
+            android:name="com.rahul.otpfetch.SMSBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />

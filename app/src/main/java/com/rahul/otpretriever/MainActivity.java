@@ -6,20 +6,20 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.rahul.otpfetch.ResponseHandler;
-import com.rahul.otpfetch.SmsRetriever;
+import com.rahul.otpfetch.SmsResponseListener;
+import com.rahul.otpfetch.SmsFetch;
 
-public class MainActivity extends AppCompatActivity implements ResponseHandler {
+public class MainActivity extends AppCompatActivity implements SmsResponseListener {
 
-    com.rahul.otpfetch.SmsRetriever smsRetriever;
+    SmsFetch smsFetch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        smsRetriever = new SmsRetriever(this, this);
-        smsRetriever.startService();
+        smsFetch = new SmsFetch(this, this);
+        smsFetch.startListeningService();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements ResponseHandler {
     }
 
     @Override
-    public void completeSMS(String message) {
+    public void smsResponse(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -36,13 +36,13 @@ public class MainActivity extends AppCompatActivity implements ResponseHandler {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (smsRetriever != null) {
-            smsRetriever.stopService();
+        if (smsFetch != null) {
+            smsFetch.stopListeningService();
         }
     }
 
     @Override
-    public void timedOut() {
+    public void requestTimedOut() {
         Toast.makeText(this, "TimedOut", Toast.LENGTH_SHORT).show();
     }
 }

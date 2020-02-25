@@ -13,21 +13,21 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-public class SmsRetriever {
+public class SmsFetch {
 
-    public static String SMS_RETRIEVED_ACTION = "122";
-    public static String MESSAGE = "12222";
-    public static String SUCCESS = "122111";
+    static String SMS_INTENT_ACTION = "SMS_INTENT_ACTION";
+    static String TAG_MESSAGE = "TAG_MESSAGE";
+    static String TAG_SUCCESS = "TAG_SUCCESS";
     private Context context;
-    private ResponseHandler handler;
+    private SmsResponseListener listener;
     private BroadcastReceiver receiver;
 
-    public SmsRetriever(Context context, ResponseHandler handler) {
+    public SmsFetch(Context context, SmsResponseListener listener) {
         this.context = context;
-        this.handler = handler;
+        this.listener = listener;
     }
 
-    public void startService() {
+    public void startListeningService() {
 
         SmsRetrieverClient client = com.google.android.gms.auth.api.phone.SmsRetriever.getClient(context /* context */);
 
@@ -45,31 +45,36 @@ public class SmsRetriever {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("SmsRetriever", "onFailure: ");
-                handler.failureToStartService(e);
+                listener.failureToStartService(e);
             }
         });
     }
 
     private void registerBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter(SMS_RETRIEVED_ACTION);
+        IntentFilter intentFilter = new IntentFilter(SMS_INTENT_ACTION);
 
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getBooleanExtra(SUCCESS, false)) {
-                    String stringExtra = intent.getStringExtra(MESSAGE);
-                    handler.completeSMS(stringExtra);
+                if (intent.getBooleanExtra(TAG_SUCCESS, false)) {
+                    String stringExtra = intent.getStringExtra(TAG_MESSAGE);
+
+                    handleResponse(stringExtra);
                     return;
                 }
 
-                handler.timedOut();
+                listener.requestTimedOut();
             }
         };
 
         context.registerReceiver(receiver, intentFilter);
     }
 
-    public void stopService() {
+    private void handleResponse(String stringExtra) {
+        listener.smsResponse(stringExtra);
+    }
+
+    public void stopListeningService() {
         context.unregisterReceiver(receiver);
     }
 }
