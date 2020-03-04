@@ -17,7 +17,7 @@ and Add the dependency:
 
 ```gradle
 dependencies {
-    implementation 'com.github.rahul13agrawal:OtpListener:1.0.1'
+    implementation 'com.github.rahul13agrawal:OtpListener:1.1'
 }
 ```
 
@@ -31,7 +31,7 @@ smsListener.startService();
 
 ### Callbacks:
 ```
-@Override
+    @Override
     public void failureToStartService(Exception e) {
         //If error to start SMSRetrieverClient, will get it here.
     }
@@ -40,13 +40,18 @@ smsListener.startService();
     public void smsResponse(String message) {
         //The complete SMS will be provided here. Write logic to fetch OTP.
     }
+
+    @Override
+    public void otpResponse(String otp) {
+        //Fetch otp from the SMS
+    }
     
     @Override
     public void requestTimedOut() {
         //If OTP not fetched and Timeout response received in Broadcast receiver, This will be called.
     }
 ```
-Once you receive the SMS, do not forget to `stopService`
+Once you receive the SMS, do not forget to ***stopService***
 ```
    smsListener.stopService();
 ```
