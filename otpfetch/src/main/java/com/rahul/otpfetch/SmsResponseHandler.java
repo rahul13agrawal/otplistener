@@ -7,4 +7,6 @@ public interface SmsResponseHandler {
     void smsResponse(String message);
 
     void requestTimedOut();
+
+    void otpResponse(String otp);
 }

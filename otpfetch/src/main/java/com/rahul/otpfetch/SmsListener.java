@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
@@ -12,19 +13,24 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SmsListener {
 
     static String SMS_INTENT_ACTION = "SMS_INTENT_ACTION";
     static String TAG_MESSAGE = "TAG_MESSAGE";
     static String TAG_SUCCESS = "TAG_SUCCESS";
 
-    private Context context;
-    private SmsResponseHandler handler;
+    private final Context context;
+    private final SmsResponseHandler handler;
+    private final int digits;
     private BroadcastReceiver receiver;
 
-    public SmsListener(Context context, SmsResponseHandler handler) {
+    public SmsListener(Context context, SmsResponseHandler handler, @NonNull int digits) {
         this.context = context;
         this.handler = handler;
+        this.digits = digits;
     }
 
     public void startService() {
@@ -75,7 +81,31 @@ public class SmsListener {
     }
 
     private void handleResponse(String retrievedText) {
+
+        if (digits > 0) {
+            String otp = getOtpFromSms(retrievedText);
+            if (!TextUtils.isEmpty(otp)) {
+                handler.otpResponse(otp);
+            }
+        }
+
         handler.smsResponse(retrievedText);
+    }
+
+    private String getOtpFromSms(String retrievedText) {
+
+        String regex = "(\\d{" + digits + "})";
+
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(retrievedText);
+
+        String val = "";
+        if (matcher.find()) {
+            val = matcher.group(0);
+        }
+
+        return val;
     }
 
     /**

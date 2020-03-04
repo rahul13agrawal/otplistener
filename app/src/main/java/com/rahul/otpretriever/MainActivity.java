@@ -6,8 +6,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.rahul.otpfetch.SmsResponseHandler;
 import com.rahul.otpfetch.SmsListener;
+import com.rahul.otpfetch.SmsResponseHandler;
 
 public class MainActivity extends AppCompatActivity implements SmsResponseHandler {
 
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements SmsResponseHandle
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        smsListener = new SmsListener(this, this);
+        smsListener = new SmsListener(this, this, 4);
         smsListener.startService();
     }
 
@@ -44,5 +44,10 @@ public class MainActivity extends AppCompatActivity implements SmsResponseHandle
     @Override
     public void requestTimedOut() {
         Toast.makeText(this, "TimedOut", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void otpResponse(String otp) {
+        //Fetch otp from the Sms
     }
 }
