@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,30 +12,32 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-public class SmsFetch {
+public class SmsListener {
 
     static String SMS_INTENT_ACTION = "SMS_INTENT_ACTION";
     static String TAG_MESSAGE = "TAG_MESSAGE";
     static String TAG_SUCCESS = "TAG_SUCCESS";
+
     private Context context;
-    private SmsResponseListener listener;
+    private SmsResponseHandler handler;
     private BroadcastReceiver receiver;
 
-    public SmsFetch(Context context, SmsResponseListener listener) {
+    public SmsListener(Context context, SmsResponseHandler handler) {
         this.context = context;
-        this.listener = listener;
+        this.handler = handler;
     }
 
-    public void startListeningService() {
+    public void startService() {
 
-        SmsRetrieverClient client = com.google.android.gms.auth.api.phone.SmsRetriever.getClient(context /* context */);
+        SmsRetrieverClient client = com.google.android.gms.auth.api.phone.SmsRetriever.getClient(context);
 
         Task<Void> task = client.startSmsRetriever();
 
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d("SmsRetriever", "onSuccess: ");
+
+                //Registering the Broadcast receiver once the Task has started.
                 registerBroadcastReceiver();
             }
         });
@@ -44,37 +45,43 @@ public class SmsFetch {
         task.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("SmsRetriever", "onFailure: ");
-                listener.failureToStartService(e);
+
+                //If the Task could not start, will throw error.
+                handler.failureToStartService(e);
             }
         });
     }
 
     private void registerBroadcastReceiver() {
+
         IntentFilter intentFilter = new IntentFilter(SMS_INTENT_ACTION);
 
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getBooleanExtra(TAG_SUCCESS, false)) {
-                    String stringExtra = intent.getStringExtra(TAG_MESSAGE);
 
-                    handleResponse(stringExtra);
+                if (intent.getBooleanExtra(TAG_SUCCESS, false)) {
+                    String retrievedText = intent.getStringExtra(TAG_MESSAGE);
+
+                    handleResponse(retrievedText);
                     return;
                 }
 
-                listener.requestTimedOut();
+                handler.requestTimedOut();
             }
         };
 
         context.registerReceiver(receiver, intentFilter);
     }
 
-    private void handleResponse(String stringExtra) {
-        listener.smsResponse(stringExtra);
+    private void handleResponse(String retrievedText) {
+        handler.smsResponse(retrievedText);
     }
 
-    public void stopListeningService() {
+    /**
+     * Call this method on onDestroy so that Broadcast Receiver can be unregistered
+     */
+    public void stopService() {
         context.unregisterReceiver(receiver);
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Status;
@@ -37,11 +38,14 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Sending a broadcast to capture the SMS received
+     */
     private void createBroadcastIntent(Context context, @Nullable String data, boolean isSuccess) {
 
-        Intent intent = new Intent(SmsFetch.SMS_INTENT_ACTION);
-        intent.putExtra(SmsFetch.TAG_MESSAGE, data);
-        intent.putExtra(SmsFetch.TAG_SUCCESS, isSuccess);
+        Intent intent = new Intent(SmsListener.SMS_INTENT_ACTION);
+        intent.putExtra(SmsListener.TAG_MESSAGE, data);
+        intent.putExtra(SmsListener.TAG_SUCCESS, isSuccess);
         context.sendBroadcast(intent);
     }
 }

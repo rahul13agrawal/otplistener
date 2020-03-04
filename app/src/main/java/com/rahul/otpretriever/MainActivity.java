@@ -6,20 +6,20 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.rahul.otpfetch.SmsResponseListener;
-import com.rahul.otpfetch.SmsFetch;
+import com.rahul.otpfetch.SmsResponseHandler;
+import com.rahul.otpfetch.SmsListener;
 
-public class MainActivity extends AppCompatActivity implements SmsResponseListener {
+public class MainActivity extends AppCompatActivity implements SmsResponseHandler {
 
-    SmsFetch smsFetch;
+    SmsListener smsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        smsFetch = new SmsFetch(this, this);
-        smsFetch.startListeningService();
+        smsListener = new SmsListener(this, this);
+        smsListener.startService();
     }
 
     @Override
@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements SmsResponseListen
     protected void onDestroy() {
         super.onDestroy();
 
-        if (smsFetch != null) {
-            smsFetch.stopListeningService();
+        if (smsListener != null) {
+            smsListener.stopService();
         }
     }
 

@@ -1,6 +1,6 @@
 package com.rahul.otpfetch;
 
-public interface SmsResponseListener {
+public interface SmsResponseHandler {
 
     void failureToStartService(Exception e);
 
