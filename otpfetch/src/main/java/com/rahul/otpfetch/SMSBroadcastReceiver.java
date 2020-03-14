@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Status;
 
@@ -16,18 +16,18 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (com.google.android.gms.auth.api.phone.SmsRetriever.SMS_RETRIEVED_ACTION.equals(intent.getAction())) {
+        if (SmsRetriever.SMS_RETRIEVED_ACTION.equals(intent.getAction())) {
 
             Bundle extras = intent.getExtras();
             Status status = null;
             if (extras != null) {
-                status = (Status) extras.get(com.google.android.gms.auth.api.phone.SmsRetriever.EXTRA_STATUS);
+                status = (Status) extras.get(SmsRetriever.EXTRA_STATUS);
             }
 
             if (status != null) {
                 switch (status.getStatusCode()) {
                     case CommonStatusCodes.SUCCESS:
-                        String message = (String) extras.get(com.google.android.gms.auth.api.phone.SmsRetriever.EXTRA_SMS_MESSAGE);
+                        String message = (String) extras.get(SmsRetriever.EXTRA_SMS_MESSAGE);
                         createBroadcastIntent(context, message, true);
                         break;
                     case CommonStatusCodes.TIMEOUT:

@@ -27,7 +27,7 @@ public class SmsListener {
     private final int digits;
     private BroadcastReceiver receiver;
 
-    public SmsListener(Context context, SmsResponseHandler handler, @NonNull int digits) {
+    public SmsListener(Context context, SmsResponseHandler handler, int digits) {
         this.context = context;
         this.handler = handler;
         this.digits = digits;
