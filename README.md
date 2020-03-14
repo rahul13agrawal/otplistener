@@ -1,7 +1,7 @@
 # OtpListener
 This will make auto detecting OTP through SMS easier to implement.
 
-Latest version : [![](https://jitpack.io/v/rahul13agrawal/OtpListener.svg)](https://jitpack.io/#rahul13agrawal/OtpListener)
+Latest version : [![](https://jitpack.io/v/rahul13agrawal/OtpListener.svg)](https://jitpack.io/#rahul13agrawal/otplistener)
 
 
 ## Setup:
@@ -17,7 +17,7 @@ and Add the dependency:
 
 ```gradle
 dependencies {
-    implementation 'com.github.rahul13agrawal:OtpListener:1.1'
+    implementation 'com.github.rahul13agrawal:otplistener:1.1'
 }
 ```
 
