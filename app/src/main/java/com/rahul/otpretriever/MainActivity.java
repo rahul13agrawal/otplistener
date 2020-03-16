@@ -49,5 +49,6 @@ public class MainActivity extends AppCompatActivity implements SmsResponseHandle
     @Override
     public void otpResponse(String otp) {
         //Fetch otp from the Sms
+        Log.d("MainActivity", "otpResponse: " + otp);
     }
 }

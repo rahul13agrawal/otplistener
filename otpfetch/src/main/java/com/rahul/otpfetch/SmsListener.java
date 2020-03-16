@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -18,9 +19,9 @@ import java.util.regex.Pattern;
 
 public class SmsListener {
 
-    static String SMS_INTENT_ACTION = "SMS_INTENT_ACTION";
-    static String TAG_MESSAGE = "TAG_MESSAGE";
-    static String TAG_SUCCESS = "TAG_SUCCESS";
+    static final String SMS_INTENT_ACTION = "SMS_INTENT_ACTION";
+    static final String TAG_MESSAGE = "TAG_MESSAGE";
+    static final String TAG_SUCCESS = "TAG_SUCCESS";
 
     private final Context context;
     private final SmsResponseHandler handler;
@@ -35,7 +36,7 @@ public class SmsListener {
 
     public void startService() {
 
-        SmsRetrieverClient client = com.google.android.gms.auth.api.phone.SmsRetriever.getClient(context);
+        SmsRetrieverClient client = SmsRetriever.getClient(context);
 
         Task<Void> task = client.startSmsRetriever();
 
