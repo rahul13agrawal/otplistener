@@ -24,7 +24,7 @@ dependencies {
 ## Implementation
 
 ```
-SmsListener smsListener = new SmsListener(this /*Context*/, this /*Listener*/);
+SmsListener smsListener = new SmsListener(this /*Context*/, this /*Listener*/, digit /*Otp Digit*/);
 //This will start SMSRetrieverClient and Broadcast Receiver.
 smsListener.startService();
 ```
